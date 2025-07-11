@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Cash do Jones</title>
+    <style>
+
+	.editable-subtitle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: -10px;
+    margin-bottom: 30px;
+}
+
+.editable-subtitle {
+    width: 300px;
+    height: 50px;
+    font-size: 18px;
+    color: #cbd5e1;
+    background: rgba(45, 74, 74, 0.6);
+    border: 2px solid rgba(203, 213, 225, 0.2);
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px;
+    transition: 0.3s ease;
+}
+
+.editable-subtitle::placeholder {
+    color: rgba(203, 213, 225, 0.5);
+}
+
+.editable-subtitle:focus {
+    outline: none;
+    border-color: #4ade80;
+    background: rgba(45, 74, 74, 0.8);
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a3a 0%, #2d4a4a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(30, 58, 58, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .title {
+            text-align: center;
+            color: #4ade80;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .calculator-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: rgba(45, 74, 74, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .calculator-table th {
+            background: rgba(45, 74, 74, 0.9);
+            color: #e5e7eb;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calculator-table td {
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(45, 74, 74, 0.6);
+            color: #e5e7eb;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4ade80;
+            background: rgba(45, 74, 74, 0.8);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .input-field::placeholder {
+            color: rgba(229, 231, 235, 0.6);
+        }
+
+        .casa-name {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(45, 74, 74, 0.6);
+            color: #e5e7eb;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .casa-name:focus {
+            outline: none;
+            border-color: #4ade80;
+            background: rgba(45, 74, 74, 0.8);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+
+        .lock-toggle {
+            width: 50px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+
+        .lock-toggle::before {
+            content: '';
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .lock-toggle.active {
+            background: #4ade80;
+        }
+
+        .lock-toggle.active::before {
+            transform: translateX(25px);
+        }
+
+        .total-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(45, 74, 74, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-label {
+            color: #4ade80;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .total-value {
+            color: #e5e7eb;
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 100px;
+            text-align: center;
+            background: rgba(45, 74, 74, 0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .arbitrage-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: rgba(45, 74, 74, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .arbitrage-label {
+            color: #e5e7eb;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .arbitrage-value {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #e5e7eb; /* branco suave */
+}
+
+        .arbitrage-positive {
+            color: #4ade80;
+        }
+
+        .arbitrage-negative {
+            color: #f87171;
+        }
+
+        .loss-percentage {
+            color: #fbbf24;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .lucro-positivo {
+            color: #4ade80 !important;
+        }
+
+        .lucro-negativo {
+            color: #f87171 !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .calculator-table th,
+            .calculator-table td {
+                padding: 10px 5px;
+                font-size: 12px;
+            }
+
+            .input-field,
+            .casa-name {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .arbitrage-section {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .total-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">📊 Calculadora de Cash do Jones</div>
+        
+	<div class="editable-subtitle-wrapper">
+    <input type="text" id="matchName" class="editable-subtitle" placeholder="Nome dos times" />
+</div>
+	
+        <table class="calculator-table">
+            <thead>
+                <tr>
+                    <th>Odd</th>
+                    <th>Casa Aposta</th>
+                    <th>Aposta (R$)</th>
+                    <th>Travar</th>
+                    <th>Cashback (%)</th>
+                    <th>Lucro (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="number" class="input-field" id="odd1" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <input type="text" class="casa-name" id="casa1" placeholder="Casa 1">
+
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="aposta1" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <div class="lock-toggle" id="lock1" onclick="toggleLock(1)"></div>
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="cashback1" step="0.01" placeholder="0" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <span id="lucro1" class="input-field" style="border: none; background: transparent; color: #4ade80; font-weight: bold;">0,00</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="number" class="input-field" id="odd2" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <input type="text" class="casa-name" id="casa2" placeholder="Casa 2">
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="aposta2" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <div class="lock-toggle" id="lock2" onclick="toggleLock(2)"></div>
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="cashback2" step="0.01" placeholder="0" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <span id="lucro2" class="input-field" style="border: none; background: transparent; color: #4ade80; font-weight: bold;">0,00</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="number" class="input-field" id="odd3" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <input type="text" class="casa-name" id="casa3" placeholder="Casa 3">
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="aposta3" step="0.01" placeholder="0,00" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <div class="lock-toggle" id="lock3" onclick="toggleLock(3)"></div>
+                    </td>
+                    <td>
+                        <input type="number" class="input-field" id="cashback3" step="0.01" placeholder="0" oninput="calculateArbitrage()">
+                    </td>
+                    <td>
+                        <span id="lucro3" class="input-field" style="border: none; background: transparent; color: #4ade80; font-weight: bold;">0,00</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-section">
+    <span class="total-label">Valor Total Apostado:</span>
+    <span class="total-value" id="totalApostado">0,00</span>
+</div>
+
+        <div class="arbitrage-section">
+            <div class="arbitrage-label">Arbitragem:</div>
+            <div class="arbitrage-value" id="arbitrageValue">+0,00% 📈</div>
+            <div class="loss-percentage" id="lossPercentage">Porcentagem de Lucro com Cash: 0,00%</div>
+        </div>
+    </div>
+
+    <script>
+        let lockedHouse = null;
+        let totalLocked = false;
+
+        function toggleLock(house) {
+            // Desbloquear todas as casas primeiro
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`lock${i}`).classList.remove('active');
+            }
+
+            // Se a casa clicada já estava travada, destravar tudo
+            if (lockedHouse === house) {
+                lockedHouse = null;
+            } else {
+                // Travar a casa selecionada
+                lockedHouse = house;
+                document.getElementById(`lock${house}`).classList.add('active');
+            }
+            
+            calculateArbitrage();
+        }
+
+        function toggleLockTotal() {
+            totalLocked = !totalLocked;
+            const lockElement = document.getElementById('lockTotal');
+            
+            if (totalLocked) {
+                lockElement.classList.add('active');
+            } else {
+                lockElement.classList.remove('active');
+            }
+            
+            calculateArbitrage();
+        }
+
+        function calculateArbitrage() {
+            const odd1 = parseFloat(document.getElementById('odd1').value) || 0;
+            const odd2 = parseFloat(document.getElementById('odd2').value) || 0;
+            const odd3 = parseFloat(document.getElementById('odd3').value) || 0;
+            
+            const cashback1 = parseFloat(document.getElementById('cashback1').value) || 0;
+            const cashback2 = parseFloat(document.getElementById('cashback2').value) || 0;
+            const cashback3 = parseFloat(document.getElementById('cashback3').value) || 0;
+
+            // Verificar se as odds são válidas para continuar o cálculo
+            if (odd1 <= 0 || odd2 <= 0 || odd3 <= 0) {
+                resetValues(); 
+                return;
+            }
+
+            let aposta1, aposta2, aposta3, total;
+
+            if (totalLocked) {
+                // Se o total está travado, calcular as apostas para igualar o lucro
+                total = parseFloat(document.getElementById('totalApostado').textContent.replace(',', '.')) || 0;
+                
+                if (total <= 0) {
+                    resetValues(); 
+                    return;
+                }
+
+                // Calcular apostas para lucro igual baseado no total
+                const result = calculateOptimalBets(total, odd1, odd2, odd3, cashback1, cashback2, cashback3);
+                
+                aposta1 = result.bet1;
+                aposta2 = result.bet2;
+                aposta3 = result.bet3;
+
+                document.getElementById('aposta1').value = aposta1.toFixed(2);
+                document.getElementById('aposta2').value = aposta2.toFixed(2);
+                document.getElementById('aposta3').value = aposta3.toFixed(2);
+
+            } else if (lockedHouse) {
+                // Se uma casa está travada, calcular as outras para igualar o lucro
+                const apostaFixa = parseFloat(document.getElementById(`aposta${lockedHouse}`).value) || 0;
+                
+                if (apostaFixa <= 0) {
+                    resetValues();
+                    return;
+                }
+
+                // Nova lógica matemática correta para calcular apostas com lucro igual
+                const result = calculateEqualProfitWithFixedBet(lockedHouse - 1, apostaFixa, [odd1, odd2, odd3], [cashback1, cashback2, cashback3]);
+                
+                aposta1 = result[0];
+                aposta2 = result[1];
+                aposta3 = result[2];
+
+                // Only update the unlocked bets
+                if (lockedHouse !== 1) document.getElementById('aposta1').value = aposta1.toFixed(2);
+                if (lockedHouse !== 2) document.getElementById('aposta2').value = aposta2.toFixed(2);
+                if (lockedHouse !== 3) document.getElementById('aposta3').value = aposta3.toFixed(2);
+
+                total = aposta1 + aposta2 + aposta3;
+            } else {
+                // Modo livre - pegar valores dos inputs existentes
+                aposta1 = parseFloat(document.getElementById('aposta1').value) || 0;
+                aposta2 = parseFloat(document.getElementById('aposta2').value) || 0;
+                aposta3 = parseFloat(document.getElementById('aposta3').value) || 0;
+                total = aposta1 + aposta2 + aposta3;
+            }
+
+            // Atualizar total
+            document.getElementById('totalApostado').textContent = total.toFixed(2).replace('.', ',');
+
+            // Calcular lucros para cada cenário usando a lógica correta
+            const lucros = calculateCorrectProfits(aposta1, aposta2, aposta3, odd1, odd2, odd3, cashback1, cashback2, cashback3);
+
+            // Exibir os lucros
+            updateLucroDisplay('lucro1', lucros.profit1);
+            updateLucroDisplay('lucro2', lucros.profit2);
+            updateLucroDisplay('lucro3', lucros.profit3);
+
+            // Calcular arbitragem baseada nas odds puras (sem cashback)
+            const invOdd1 = 1 / odd1;
+            const invOdd2 = 1 / odd2;
+            const invOdd3 = 1 / odd3;
+            const somaInvOdds = invOdd1 + invOdd2 + invOdd3;
+
+            const arbitragePercent = (1 / somaInvOdds - 1) * 100;
+
+            // Calcular porcentagem de perda baseada no menor lucro real (considerando cashback)
+            const menorLucro = Math.min(lucros.profit1, lucros.profit2, lucros.profit3);
+            let lossPercent = 0;
+            
+            if (total > 0) {
+                if (menorLucro < 0) {
+                    // Se há prejuízo, calcular a porcentagem de perda
+                    lossPercent = Math.abs((menorLucro / total) * 100);
+                } else {
+                    // Se há lucro, mostrar como porcentagem positiva
+                    lossPercent = (menorLucro / total) * 100;
+                }
+            }
+
+            // Atualizar display da arbitragem
+            const arbitrageElement = document.getElementById('arbitrageValue');
+            const lossElement = document.getElementById('lossPercentage');
+            
+            if (arbitragePercent >= 0) {
+                arbitrageElement.textContent = `+${arbitragePercent.toFixed(2)}% 📈`;
+                arbitrageElement.className = 'arbitrage-value arbitrage-positive';
+            } else {
+                arbitrageElement.textContent = `${arbitragePercent.toFixed(2)}% 📉`;
+                arbitrageElement.className = 'arbitrage-value arbitrage-negative';
+            }
+
+            lossElement.textContent = `Porcentagem de ${menorLucro < 0 ? 'Perda' : 'Lucro'}: ${lossPercent.toFixed(2)}%`;
+        }
+
+        // Função matemática correta para calcular apostas com uma casa fixa
+        function calculateEqualProfitWithFixedBet(fixedHouse, fixedBet, odds, cashbacks) {
+            // Converter cashbacks para decimal
+            const cb = cashbacks.map(c => c / 100);
+            
+            // Inicializar apostas
+            const bets = [0, 0, 0];
+            bets[fixedHouse] = fixedBet;
+            
+            // Identificar as outras duas casas
+            const otherHouses = [];
+            for (let i = 0; i < 3; i++) {
+                if (i !== fixedHouse) {
+                    otherHouses.push(i);
+                }
+            }
+            const idxA = otherHouses[0];
+            const idxB = otherHouses[1];
+            
+            // Extrair valores para facilitar cálculos
+            const oddFixed = odds[fixedHouse];
+            const cbFixed = cb[fixedHouse];
+            
+            const oddA = odds[idxA];
+            const cbA = cb[idxA];
+            
+            const oddB = odds[idxB];
+            const cbB = cb[idxB];
+            
+            // Fórmula correta baseada na análise da calculadora oficial:
+            // bet_A * (odd_A - cb_A) = fixed_bet * (odd_fixed - cb_fixed)
+            // bet_B * (odd_B - cb_B) = fixed_bet * (odd_fixed - cb_fixed)
+            
+            const C = fixedBet * (oddFixed - cbFixed);
+            
+            const betA = C / (oddA - cbA);
+            const betB = C / (oddB - cbB);
+            
+            // Garantir valores não negativos
+            bets[idxA] = Math.max(0, betA);
+            bets[idxB] = Math.max(0, betB);
+            
+            return bets;
+        }
+
+        // Função para calcular apostas ótimas baseada no total
+        function calculateOptimalBets(totalAmount, odd1, odd2, odd3, cashback1, cashback2, cashback3) {
+            // Distribuição inicial proporcional às odds inversas
+            const weight1 = 1 / odd1;
+            const weight2 = 1 / odd2;
+            const weight3 = 1 / odd3;
+            const totalWeight = weight1 + weight2 + weight3;
+            
+            let bet1 = (totalAmount * weight1) / totalWeight;
+            let bet2 = (totalAmount * weight2) / totalWeight;
+            let bet3 = (totalAmount * weight3) / totalWeight;
+            
+            // Ajuste fino para garantir lucro igual
+            for (let i = 0; i < 50; i++) {
+                const profits = calculateCorrectProfits(bet1, bet2, bet3, odd1, odd2, odd3, cashback1, cashback2, cashback3);
+                
+                // Verificar se os lucros estão próximos o suficiente
+                const maxDiff = Math.max(
+                    Math.abs(profits.profit1 - profits.profit2),
+                    Math.abs(profits.profit2 - profits.profit3),
+                    Math.abs(profits.profit1 - profits.profit3)
+                );
+                
+                if (maxDiff < 0.1) break;
+                
+                // Ajustar apostas baseado na diferença de lucros
+                const avgProfit = (profits.profit1 + profits.profit2 + profits.profit3) / 3;
+                
+                const adjustment1 = (avgProfit - profits.profit1) * 0.05;
+                const adjustment2 = (avgProfit - profits.profit2) * 0.05;
+                const adjustment3 = (avgProfit - profits.profit3) * 0.05;
+                
+                bet1 += adjustment1;
+                bet2 += adjustment2;
+                bet3 += adjustment3;
+                
+                // Normalizar para manter o total
+                const currentTotal = bet1 + bet2 + bet3;
+                const factor = totalAmount / currentTotal;
+                bet1 *= factor;
+                bet2 *= factor;
+                bet3 *= factor;
+            }
+            
+            return { bet1, bet2, bet3 };
+        }
+
+        // Função CORRIGIDA para calcular lucros
+        function calculateCorrectProfits(bet1, bet2, bet3, odd1, odd2, odd3, cashback1, cashback2, cashback3) {
+            const totalInvested = bet1 + bet2 + bet3;
+
+            // Cenário 1: Casa 1 ganha
+            const return1 = bet1 * odd1;
+            let cashbackValue2_1 = 0;
+            if (bet2 > 0) cashbackValue2_1 = bet2 * (cashback2 / 100); // Cashback da casa 2 (perdedora)
+            let cashbackValue3_1 = 0;
+            if (bet3 > 0) cashbackValue3_1 = bet3 * (cashback3 / 100); // Cashback da casa 3 (perdedora)
+            const profit1 = return1 - totalInvested + cashbackValue2_1 + cashbackValue3_1;
+
+            // Cenário 2: Casa 2 ganha
+            const return2 = bet2 * odd2;
+            let cashbackValue1_2 = 0;
+            if (bet1 > 0) cashbackValue1_2 = bet1 * (cashback1 / 100); // Cashback da casa 1 (perdedora)
+            let cashbackValue3_2 = 0;
+            if (bet3 > 0) cashbackValue3_2 = bet3 * (cashback3 / 100); // Cashback da casa 3 (perdedora)
+            const profit2 = return2 - totalInvested + cashbackValue1_2 + cashbackValue3_2;
+
+            // Cenário 3: Casa 3 ganha
+            const return3 = bet3 * odd3;
+            let cashbackValue1_3 = 0;
+            if (bet1 > 0) cashbackValue1_3 = bet1 * (cashback1 / 100); // Cashback da casa 1 (perdedora)
+            let cashbackValue2_3 = 0;
+            if (bet2 > 0) cashbackValue2_3 = bet2 * (cashback2 / 100); // Cashback da casa 2 (perdedora)
+            const profit3 = return3 - totalInvested + cashbackValue1_3 + cashbackValue2_3;
+
+            return { profit1, profit2, profit3 };
+        }
+
+        function updateLucroDisplay(elementId, lucro) {
+            const element = document.getElementById(elementId);
+            element.textContent = lucro.toFixed(2).replace('.', ',');
+            
+            // Aplicar cor baseada no valor do lucro
+            if (lucro >= 0) {
+                element.className = 'input-field lucro-positivo';
+                element.style.border = 'none';
+                element.style.background = 'transparent';
+                element.style.fontWeight = 'bold';
+            } else {
+                element.className = 'input-field lucro-negativo';
+                element.style.border = 'none';
+                element.style.background = 'transparent';
+                element.style.fontWeight = 'bold';
+            }
+        }
+
+        function resetValues() {
+            document.getElementById('lucro1').textContent = '0,00';
+            document.getElementById('lucro2').textContent = '0,00';
+            document.getElementById('lucro3').textContent = '0,00';
+            document.getElementById('totalApostado').textContent = '0,00';
+            document.getElementById('arbitrageValue').textContent = '+0,00% 📈';
+            document.getElementById('lossPercentage').textContent = 'Porcentagem de Lucro: 0,00%';
+        }
+    </script>
+</body>
+</html>
